@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@backend/core": ["libs/core/src/index.ts"]
+      "@backend/core": ["libs/core/src/index.ts"],
+      "@backend/shared-types": ["libs/shared-types/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
