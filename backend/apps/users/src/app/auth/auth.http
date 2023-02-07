@@ -7,3 +7,17 @@ Content-Type: application/json
   "email": "tdty@gmail.com",
   "password": "123456"
 }
+
+### Login user
+POST http://localhost:3333/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "tdty@gmail.com",
+  "password": "123456"
+}
+
+
+### Check user authorization
+GET http://localhost:3333/api/auth/check-authorization HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UyNDMwNmVkYzlkNTZmNmU3MzkzMmUiLCJlbWFpbCI6InRkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjc1Nzc2NzI4LCJleHAiOjE2NzU3ODI3Mjh9.oEQKb_PlTr8QfNTxdQrjBaD1yZzVISD2pkBdx6Yf2gE
