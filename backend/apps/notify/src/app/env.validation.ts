@@ -1,7 +1,7 @@
-import { IsNumber, IsString, Max, Min, validateSync } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
-import { EnvValidationMessage}  from './app.constant';
 import { PossiblePort } from '@backend/core';
+import { plainToInstance } from 'class-transformer';
+import { IsNumber, IsString, Max, Min, validateSync } from 'class-validator';
+import { EnvValidationMessage } from './app.constant';
 
 class EnvironmentsConfig {
   @IsString({
@@ -54,7 +54,38 @@ class EnvironmentsConfig {
   @IsString({
     message: EnvValidationMessage.RMQSubscriberQueue
   })
-  public RABBIT_USERS_SERVICE_SUBSCRIBERS_QUEUE: string;
+  public RABBIT_NOTIFY_SERVICE_SUBSCRIBERS_QUEUE: string;
+  @IsString({
+    message: EnvValidationMessage.RMQSubscriberQueue
+  })
+  public RABBIT_NOTIFY_SERVICE_ORDERS_QUEUE: string;
+
+  @IsString({
+    message: EnvValidationMessage.MailServerHostRequired
+  })
+  public MAIL_SMTP_HOST: string;
+
+  @IsNumber({}, {
+    message: EnvValidationMessage.MailServerPortRequired
+  })
+  @Min(PossiblePort.Min)
+  @Max(PossiblePort.Max)
+  public MAIL_SMTP_PORT: number;
+
+  @IsString({
+    message: EnvValidationMessage.MailServerUserNameRequired
+  })
+  public MAIL_USER_NAME: string;
+
+  @IsString({
+    message: EnvValidationMessage.MailServerPasswordRequired
+  })
+  public MAIL_USER_PASSWORD: string;
+
+  @IsString({
+    message: EnvValidationMessage.MailServerDefaultFromRequired
+  })
+  public MAIL_FROM: string;
 }
 
 export function validateEnvironments(config: Record<string, unknown>) {

@@ -7,3 +7,5 @@ export enum AuthUserMessageException {
   DateBirthMature = 18,
   DateBirthMatureNotValid = 'The user date birth is not matureness'
 }
+
+export const RABBITMQ_SERVICE = Symbol('RABBITMQ_SERVICE');

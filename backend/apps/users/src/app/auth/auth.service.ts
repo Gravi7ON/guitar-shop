@@ -1,9 +1,11 @@
-import { User } from '@backend/shared-types';
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { createEvent } from '@backend/core';
+import { CommandEvent, User } from '@backend/shared-types';
+import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ClientProxy } from '@nestjs/microservices';
 import { UserEntity } from '../user/user.entity';
 import { UserRepository } from '../user/user.repository';
-import { AuthUserMessageException } from './auth.constant';
+import { AuthUserMessageException, RABBITMQ_SERVICE } from './auth.constant';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 
@@ -12,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    @Inject(RABBITMQ_SERVICE) private readonly rabbitClient: ClientProxy
   ) {}
 
   async register(dto: CreateUserDto) {
@@ -28,15 +31,15 @@ export class AuthService {
 
     const createdUser = await this.userRepository.create(userEntity);
 
-    // if (createdUser.role === UserRole.Performer && createdUser.sendNotify) {
-    //   this.rabbitClient.emit(
-    //     createEvent(CommandEvent.AddSubscriber),
-    //     {
-    //       email: createdUser.email,
-    //       name: createdUser.name
-    //     }
-    //   );
-    // }
+    this.rabbitClient.emit(
+      createEvent(CommandEvent.AddSubscriber),
+      {
+        loginLink: 'http://localhost/login',
+        email: user.email,
+        password: user.password,
+        name: user.name
+      }
+    );
 
     return createdUser;
   }
