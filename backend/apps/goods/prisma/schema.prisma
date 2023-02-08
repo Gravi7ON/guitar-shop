@@ -46,7 +46,7 @@ model Order {
   amount        Int
   cost          Int
   sum           Int
-  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product       Product @relation(fields: [productId], references: [id])
   productId     Int
   order         TotalOrder @relation(fields: [totalOrderId], references: [id])
   totalOrderId  Int

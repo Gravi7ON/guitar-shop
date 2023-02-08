@@ -1,0 +1,39 @@
+### Create new product
+POST http://localhost:3335/api/product HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU4NTgyNDIsImV4cCI6MTY3NTg2NDI0Mn0.mBiRN_88caLoezqfaCU89-_xk3YFMXaT-0ut7TX1L8o
+
+{
+  "title": "guitaaaaaaaaaar",
+  "description": "new amazing exelent cool guitar",
+  "cost": 10000,
+  "image": "guitar.png",
+  "productType": "электро",
+  "vendorCode": "hey3f",
+  "amountOfString": 6
+}
+
+### Update existed product
+PATCH http://localhost:3335/api/product/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU4NTgyNDIsImV4cCI6MTY3NTg2NDI0Mn0.mBiRN_88caLoezqfaCU89-_xk3YFMXaT-0ut7TX1L8o
+
+{
+  "title": "guitaaaaaaaaaar",
+  "description": "new amazing exelent cool guitar",
+  "cost": 500,
+  "image": "guitar.jpg",
+  "productType": "укулеле",
+  "vendorCode": "hey3fsdsd",
+  "amountOfString": 7
+}
+
+### Delete existed product
+DELETE http://localhost:3335/api/product/12 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU4NTgyNDIsImV4cCI6MTY3NTg2NDI0Mn0.mBiRN_88caLoezqfaCU89-_xk3YFMXaT-0ut7TX1L8o
+
+### Find existed product
+GET http://localhost:3335/api/product/11 HTTP/1.1
+
+### Find existed products
+GET http://localhost:3335/api/product?limit=9&sortDirection=desc&page=1&sortField=rating HTTP/1.1

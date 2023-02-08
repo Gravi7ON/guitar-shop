@@ -1,6 +1,6 @@
 import { createEvent } from '@backend/core';
 import { CommandEvent, User } from '@backend/shared-types';
-import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ClientProxy } from '@nestjs/microservices';
 import { UserEntity } from '../user/user.entity';
@@ -19,11 +19,14 @@ export class AuthService {
 
   async register(dto: CreateUserDto) {
     const user: User = dto;
-
     const existUser = await this.userRepository.findByEmail(user.email);
 
     if (existUser) {
       throw new ConflictException(AuthUserMessageException.Exists)
+    }
+
+    if (user.isAdmin) {
+      throw new ForbiddenException(AuthUserMessageException.ForbiddenAdmin)
     }
 
     const userEntity = await new UserEntity(user)

@@ -3,9 +3,7 @@ export enum AuthUserMessageException {
   NotFound = 'User not found',
   PasswordWrong = 'User password is wrong',
   EmailNotValid = 'The email is not valid',
-  DateBirthNotValid = 'The user date birth is not valid',
-  DateBirthMature = 18,
-  DateBirthMatureNotValid = 'The user date birth is not matureness'
+  ForbiddenAdmin = 'There is only one admin may exists'
 }
 
 export const RABBITMQ_SERVICE = Symbol('RABBITMQ_SERVICE');
