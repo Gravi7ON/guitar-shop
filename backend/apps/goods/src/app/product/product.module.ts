@@ -8,9 +8,11 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { ProductRepository } from './product.repository';
 import { AdminGuard } from './guards/admin.guard';
+import { CommentModule } from '../comment/comment.module';
 
 @Module({
   imports: [
+    CommentModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

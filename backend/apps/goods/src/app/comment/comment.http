@@ -1,0 +1,14 @@
+### Create new comment
+POST http://localhost:3335/api/comment/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU5MjAyMjMsImV4cCI6MTY3NTkyNjIyM30.IcQ66ZbUMAa8lLpIFFcOgS3I7IuOsjFVsdZVact4yx4
+
+{
+  "text": "guitaaaaaaaaaar",
+  "positive": "new amazing exelent cool guitar. Nisi consectetur qui pariatur.",
+  "negative": "Adipisicing dolore elit consequat culpa. Irure excepteur.",
+  "grade": 1
+}
+
+### Find existed comments
+GET http://localhost:3335/api/comment/1 HTTP/1.1

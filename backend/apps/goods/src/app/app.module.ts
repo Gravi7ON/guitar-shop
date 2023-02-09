@@ -5,6 +5,7 @@ import { rabbitMqOptions } from '../config/rabbitmq.config';
 import { ENV_FILE_PATH } from './app.constant';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductModule } from './product/product.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { ProductModule } from './product/product.module';
       isGlobal: true,
       envFilePath: ENV_FILE_PATH,
       load: [jwtConfig, rabbitMqOptions],
-    })
+    }),
+    CommentModule,
   ],
   controllers: [],
   providers: [],

@@ -33,7 +33,7 @@ DELETE http://localhost:3335/api/product/12 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU4NTgyNDIsImV4cCI6MTY3NTg2NDI0Mn0.mBiRN_88caLoezqfaCU89-_xk3YFMXaT-0ut7TX1L8o
 
 ### Find existed product
-GET http://localhost:3335/api/product/11 HTTP/1.1
+GET http://localhost:3335/api/product/1 HTTP/1.1
 
 ### Find existed products
 GET http://localhost:3335/api/product?limit=9&sortDirection=desc&page=1&sortField=rating HTTP/1.1
