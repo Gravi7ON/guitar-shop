@@ -1,4 +1,4 @@
-import { AmountOfString, Comment, Order } from '@backend/shared-types';
+import { AmountOfString, Comment } from '@backend/shared-types';
 import { Entity } from '@backend/core';
 import { Product } from '@backend/shared-types';
 
@@ -15,7 +15,6 @@ export class ProductEntity implements Entity<ProductEntity>, Product {
   public rating: number;
   public createdAt: Date;
   public comments?: Comment[];
-  public orders?: Order[];
 
   constructor(task: Product) {
     this.fillEntity(task);
@@ -34,7 +33,6 @@ export class ProductEntity implements Entity<ProductEntity>, Product {
     this.rating = entity.rating;
     this.createdAt = entity.createdAt;
     this.comments = [];
-    this.orders = [];
   }
 
   public toObject(): ProductEntity {

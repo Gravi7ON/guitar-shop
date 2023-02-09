@@ -6,6 +6,7 @@ import { ENV_FILE_PATH } from './app.constant';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductModule } from './product/product.module';
 import { CommentModule } from './comment/comment.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommentModule } from './comment/comment.module';
       load: [jwtConfig, rabbitMqOptions],
     }),
     CommentModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

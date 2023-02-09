@@ -20,14 +20,10 @@ export class ProductRepository implements CRUDRepository<ProductEntity, number, 
         ...productEntity,
         comments: {
           connect: []
-        },
-        orders: {
-          connect: []
         }
       },
       include: {
-        comments: true,
-        orders: true
+        comments: true
       }
     });
   }
@@ -62,14 +58,10 @@ export class ProductRepository implements CRUDRepository<ProductEntity, number, 
         ...product,
         comments: {
           connect: []
-        },
-        orders: {
-          connect: []
         }
       },
       include: {
-        comments: true,
-        orders: true
+        comments: true
       }
     });
   }
@@ -80,8 +72,7 @@ export class ProductRepository implements CRUDRepository<ProductEntity, number, 
         id
       },
       include: {
-        comments: true,
-        orders: true
+        comments: true
       }
     });
   }
@@ -90,8 +81,7 @@ export class ProductRepository implements CRUDRepository<ProductEntity, number, 
     return this.prisma.product.findMany({
       take: limit,
       include: {
-        comments: true,
-        orders: true
+        comments: true
       },
       orderBy: sortField === 'cost' ? [
         {

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "totalProduct" SET DEFAULT 0,
+ALTER COLUMN "totalSum" SET DEFAULT 0;

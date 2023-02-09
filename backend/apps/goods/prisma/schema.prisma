@@ -24,7 +24,6 @@ model Product {
  cost           Int
  createdAt      DateTime @default(now())
  comments       Comment[]
- orders         Order[]
 }
 
 model Comment {
@@ -43,19 +42,18 @@ model Order {
   id            Int @id @default(autoincrement())
   createdAt     DateTime @default(now())
   userId        String
-  amount        Int
-  cost          Int
-  sum           Int
-  product       Product @relation(fields: [productId], references: [id])
-  productId     Int
-  order         TotalOrder @relation(fields: [totalOrderId], references: [id])
-  totalOrderId  Int
+  products      OrderProduct[]
+  totalSum      Int @default(0)
+  totalProduct  Int @default(0)
 }
 
-model TotalOrder {
+model OrderProduct {
   id            Int @id @default(autoincrement())
-  orders        Order[]
-  totalSum      Int
-  totalProduct  Int
   createdAt     DateTime @default(now())
+  amount        Int
+  sum           Int
+  productId     Int
+  cost          Int
+  order         Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId       Int
 }

@@ -5,7 +5,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { Comment } from '@backend/shared-types';
 import { CommentQuery } from './queries/comment.query';
 
-type UserProductLink = {
+type UserAndProductLink = {
   productId: number;
   userId: string;
 }
@@ -16,7 +16,7 @@ export class CommentService {
     private readonly commentRepository: CommentRepository
   ) {}
 
-  async createComment(dto: CreateCommentDto, link: UserProductLink): Promise<Comment> {
+  async createComment(dto: CreateCommentDto, link: UserAndProductLink): Promise<Comment> {
     const commentEntity = new CommentEntity({
       ...dto,
       ...link

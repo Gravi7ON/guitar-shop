@@ -1,6 +1,5 @@
 import { AmountOfString } from './amount-string.enum';
 import { Comment } from './comment.interface';
-import { Order } from './order.interface';
 
 export interface Product {
   id?: number
@@ -15,5 +14,4 @@ export interface Product {
   cost: number;
   createdAt?: Date;
   comments?: Comment[];
-  orders?: Order[];
 }
