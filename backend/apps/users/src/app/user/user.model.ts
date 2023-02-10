@@ -4,6 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
   collection: 'users',
+  timestamps: true
 })
 export class UserModel extends Document implements User {
   @Prop({
@@ -26,9 +27,6 @@ export class UserModel extends Document implements User {
     default: false
   })
   public isAdmin: boolean;
-
-  @Prop()
-  public createdAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserModel);

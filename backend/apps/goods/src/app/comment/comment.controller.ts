@@ -1,6 +1,6 @@
 import { fillObject } from '@backend/core';
 import { Body, Controller, Param, ParseIntPipe, Post, UseGuards, Request, Get, Query } from '@nestjs/common';
-import { JwtAuthGuard } from '../product/guards/jwt.guard';
+import { JwtAuthGuard } from '../guards/jwt.guard';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentQuery } from './queries/comment.query';

@@ -1,11 +1,17 @@
-import { ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNumber, IsPositive, Min, ValidateNested } from 'class-validator';
 
-interface ProductDto {
+class ProductDto {
+  @IsNumber()
   id: number;
+
+  @IsPositive()
+  @Min(1)
   amount: number;
 }
 
 export class CreateOrderDto {
-  @ValidateNested()
+  @ValidateNested({each: true})
+  @Type(() => ProductDto)
   public products: ProductDto[];
 }

@@ -1,5 +1,5 @@
 export interface OrderProduct {
-  id: number;
+  id?: number;
   amount: number;
   sum?: number;
   createdAt?: Date;

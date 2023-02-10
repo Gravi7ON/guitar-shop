@@ -13,8 +13,7 @@ export class UserRepository {
 
   public async create(item: UserEntity): Promise<User> {
     const newUser = new this.userModel({
-      ...item.toObject(),
-      createdAt: new Date().toISOString()
+      ...item.toObject()
     })
 
     return newUser.save();
