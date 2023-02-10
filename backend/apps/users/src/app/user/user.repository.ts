@@ -30,4 +30,10 @@ export class UserRepository {
       .findOne({email})
       .exec();
   }
+
+  public async findAdmin(): Promise<User | null> {
+    return this.userModel
+      .findOne({isAdmin: true})
+      .exec();
+  }
 }

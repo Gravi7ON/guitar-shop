@@ -1,0 +1,15 @@
+<pre>
+  Имеется новый заказ.
+  Общее количество товаров: {{totalProduct}},
+  на сумму {{totalSum}}.
+  <ul class="people_list">
+  Товары:
+  {{#each products}}
+    <li>
+      id: {{this.id}}
+      amount: {{this.amount}}
+      cost: {{this.cost}}
+    </li>
+  {{/each}}
+</ul>
+</pre>

@@ -33,6 +33,11 @@ export class AuthController {
   async checkAuthorization(@Request() req) {
     const userId = req.user.id;
 
-    return fillObject(LoggedUserRdo, await this.authService.findUser(userId))
+    return fillObject(LoggedUserRdo, await this.authService.findUser(userId));
+  }
+
+  @Get('admin-info')
+  async findAdmin() {
+    return fillObject(LoggedUserRdo, await this.authService.findAdmin());
   }
 }

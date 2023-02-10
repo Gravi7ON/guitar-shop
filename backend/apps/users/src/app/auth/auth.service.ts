@@ -86,4 +86,14 @@ export class AuthService {
 
     return existUser;
   }
+
+  async findAdmin() {
+    const existAdmin = await this.userRepository.findAdmin();
+
+    if (!existAdmin) {
+      throw new NotFoundException(AuthUserMessageException.AdminNotFound);
+    }
+
+    return existAdmin;
+  }
 }

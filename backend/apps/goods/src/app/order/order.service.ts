@@ -1,10 +1,13 @@
-import { Order } from '@backend/shared-types';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { createEvent } from '@backend/core';
+import { CommandEvent, Order } from '@backend/shared-types';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import axios from 'axios';
 import { OrderProductEntity } from '../order-product/order-product.entity';
 import { OrderProductRepository } from '../order-product/order-product.repository';
 import { ProductRepository } from '../product/product.repository';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { OrderMessageException } from './order.constant';
+import { OrderMessageException, RABBITMQ_SERVICE } from './order.constant';
 import { OrderEntity } from './order.entity';
 import { OrderRepository } from './order.repository';
 import { OrderQuery } from './queries/order.query';
@@ -14,7 +17,8 @@ export class OrderService {
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly productRepository: ProductRepository,
-    private readonly orderProductRepository: OrderProductRepository
+    private readonly orderProductRepository: OrderProductRepository,
+    @Inject(RABBITMQ_SERVICE) private readonly rabbitClient: ClientProxy
   ) {}
 
   async createOrder(dto: CreateOrderDto, userId: string): Promise<void> {
@@ -51,7 +55,7 @@ export class OrderService {
       this.orderProductRepository.create(productOrdered);
     }
 
-    this.orderRepository.update(
+    const completedOrder: Order = await this.orderRepository.update(
       newOrder.id,
       orderedGoodsEntities.reduce(
         (sum, product) => sum = {
@@ -62,6 +66,17 @@ export class OrderService {
           totalSum: 0
         }
       )
+    );
+
+    const {data: admin} = await axios.get('http://localhost:3333/api/auth/admin-info');
+    this.rabbitClient.emit(
+      createEvent(CommandEvent.SuccessOrder),
+      {
+        products: completedOrder.products,
+        totalProduct: completedOrder.totalProduct,
+        totalSum: completedOrder.totalSum,
+        adminEmail: admin.email
+      }
     );
   }
 
