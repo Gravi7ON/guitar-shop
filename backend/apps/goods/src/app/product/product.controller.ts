@@ -22,6 +22,13 @@ export class ProductController {
     return fillObject(ProductRdo, newProduct);
   }
 
+  @Get('/')
+  async findProducts(@Query() query: ProductQuery) {
+    const existedProducts = await this.productService.findProducts(query);
+
+    return fillObject(ProductRdo, existedProducts);
+  }
+
   @UseGuards(JwtAuthGuard, AdminGuard)
   @Patch('/:id')
   async update(@Body() dto: UpdateProductDto, @Param('id', ParseIntPipe) id: number) {
@@ -35,13 +42,6 @@ export class ProductController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(@Param('id', ParseIntPipe) id: number) {
     await this.productService.deleteProduct(id);
-  }
-
-  @Get('/')
-  async findProducts(@Query() query: ProductQuery) {
-    const existedProducts = await this.productService.findProducts(query);
-
-    return fillObject(ProductRdo, existedProducts);
   }
 
   @Get('/:id')

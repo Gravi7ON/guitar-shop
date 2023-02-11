@@ -1,0 +1,1051 @@
+openapi: 3.0.0
+info:
+  title: API сервер для проекта «Магазин гитар».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Магазин гитар».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+tags:
+  - name: goods
+    description: Действия с товарами.
+  - name: users
+    description: Действия с пользователем.
+  - name: comments
+    description: Действия с комментариями.
+  - name: orders
+    description: Действия с заказами.
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 6329c3d6a04ab1061c6425ea
+
+                  email:
+                    type: string
+                    example: keks@htmlacademy.ru
+
+                  name:
+                    type: string
+                    example: Keks
+
+                  registerDate:
+                    type: string
+                    example: '2023-02-11T08:57:14.944Z'
+
+        "400":
+          description: Некорректные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 400
+
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: password must be longer than or equal to 6 character
+
+                  error:
+                    type: string
+                    example: Bad Request
+
+        "409":
+          description: Пользователь с таким email уже существует.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 409
+
+                  message:
+                    type: string
+                    example: User with this email already exists
+
+                  error:
+                    type: string
+                    example: Conflict
+
+  /api/auth/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля.
+
+      requestBody:
+        description: Объект, содержащий токен доступа.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: keks@htmlacademy.ru
+
+                password:
+                  type: string
+                  example: 123456
+        required: true
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzYxMDc3OTUsImV4cCI6MTY3NjExMzc5NX0.4Ru0-8PHS4iEloulpmIUC8D9TDNW-1F4zM7KVkufJQA
+
+        "400":
+          description: Некорректные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 400
+
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: password must be longer than or equal to 6 character
+
+                  error:
+                    type: string
+                    example: Bad Request
+
+        "404":
+          description: Пользователь не найден.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 404
+
+                  messages:
+                    type: string
+                    example: User not found
+
+                  error:
+                    type: string
+                    example: Not Found
+
+  /api/auth/check-authorization:
+    get:
+      tags:
+        - users
+      security:
+        - ApiKeyAuth: []
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю.
+
+      parameters:
+        - in: header
+          name: Autorization
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 6329c3d6a04ab1061c6425ea
+
+                  email:
+                    type: string
+                    example: keks@htmlacademy.ru
+
+                  name:
+                    type: string
+                    example: Keks
+
+                  registerDate:
+                    type: string
+                    example: '2023-02-11T08:57:14.944Z'
+
+                  isAdmin:
+                    type: boolean
+                    example: false
+
+        "401":
+          description: Пользователь не авторизован или невалидный токен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 401
+
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /api/product:
+    get:
+      tags:
+        - goods
+      summary: Получить список товаров
+      description: Возвращает массив товаров. Каждый товар описан в виде объекта.
+
+      parameters:
+        - in: path
+          name: queryGoods
+          schema:
+            type: string
+            example: limit=9&sortDirection=desc&page=1&sortField=rating
+          required: false
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/product'
+
+        "404":
+          description: Товары не найдены.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 404
+
+                  messages:
+                    type: string
+                    example: Products not found
+
+                  error:
+                    type: string
+                    example: Not Found
+
+    post:
+      tags:
+        - goods
+      security:
+        - ApiKeyAuth: []
+      summary: Создание товара
+      description: Создает новый товар
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+
+      requestBody:
+        description: Объект, содержащий данные товара.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: guitaaaaaaaaaar
+
+                description:
+                  type: string
+                  example: new amazing exelent cool guitar
+
+                cost:
+                  type: number
+                  example: 1000
+
+                image:
+                  type: string
+                  example: guitar.png
+
+                productType:
+                  type: string
+                  example: электро
+
+                amountOfString:
+                  type: number
+                  example: 6
+
+                vendorCode:
+                  type: string
+                  example: hey3f
+        required: true
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/product'
+
+        "400":
+          description: Некорректные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 400
+
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: 'amountOfString must be one of the following values: 4, 6, 7, 12'
+
+                  error:
+                    type: string
+                    example: Bad Request
+
+  /api/product/{productId}:
+    get:
+      tags:
+        - "goods"
+      summary: Получить товар
+      description: Возвращает товар с идентификатором `productId`.
+
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+            example: 6
+          required: true
+          description: Уникальный идентификатор товара.
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/product'
+
+        "404":
+          description: Ресурсы не нейдены.
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    statusCode:
+                      type: number
+                      example: 404
+
+                    messages:
+                      type: string
+                      example: Product not found
+
+                    error:
+                      type: string
+                      example: Not Found
+
+    patch:
+      tags:
+        - goods
+      security:
+        - ApiKeyAuth: []
+      summary: Редактирование товара
+      description: Редактирует cуществующий товар
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+        - in: path
+          name: productId
+          schema:
+            type: string
+            example: 6
+          required: true
+          description: Уникальный идентификатор товара.
+
+      requestBody:
+        description: Объект, содержащий данные товара.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: guitaaaaaaaaaar
+
+                description:
+                  type: string
+                  example: new amazing exelent cool guitar
+
+                cost:
+                  type: number
+                  example: 1000
+
+                image:
+                  type: string
+                  example: guitar.png
+
+                productType:
+                  type: string
+                  example: электро
+
+                amountOfString:
+                  type: number
+                  example: 6
+
+                vendorCode:
+                  type: string
+                  example: hey3f
+        required: true
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/product'
+
+        "400":
+          description: Некорректные данные.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 400
+
+                  messages:
+                    type: array
+                    items:
+                      type: string
+                      example: 'amountOfString must be one of the following values: 4, 6, 7, 12'
+
+                  error:
+                    type: string
+                    example: Bad Request
+
+    delete:
+      tags:
+        - goods
+      security:
+        - ApiKeyAuth: []
+      summary: Удаление товара
+      description: Редактирует cуществующий товар
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+        - in: path
+          name: productId
+          schema:
+            type: string
+            example: 6
+          required: true
+          description: Уникальный идентификатор товара.
+
+      responses:
+        "204":
+          description: No Content
+
+  /api/comment/{productId}:
+    get:
+      tags:
+        - comments
+      summary: Получить список комментариев
+      description: Возвращает список комментариев для товара с идентификатором `productId`.
+
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+            example: 6
+          required: true
+          description: Уникальный идентификатор товара.
+
+        - in: path
+          name: commentQuery
+          schema:
+            type: string
+            example: limit=10&page=2&sortDirection=asc
+          required: false
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+
+        "404":
+          description: Ресурсы не нейдены.
+          content:
+            application/json:
+              examples:
+                comments:
+                  summary: comments-not-yet
+                  value:
+                    statusCode: 404
+
+                    message: Comments to this productId aren't exist yet
+
+                    error: Not Found
+
+                product:
+                  summary: product-not-found
+                  value:
+                    statusCode: 404
+
+                    message: Product with this id not found
+
+                    error: Not Found
+
+    post:
+      tags:
+        - comments
+      security:
+        - ApiKeyAuth: []
+      summary: Добавить новый комментарий
+      description: Добавляет новый комментарий для товара с идентификатором `productId`.
+
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+          required: true
+          description: Уникальный идентификатор товара.
+        - in: header
+          name: Autorization
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+
+      requestBody:
+        description: Объект, содержащий комментарий и оценку пользователя.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+
+                grade:
+                  type: number
+                  example: 7
+
+                positive:
+                  type: string
+                  example: new amazing exelent cool guitar. Nisi consectetur qui pariatur
+
+                negative:
+                  type: string
+                  example: new amazing exelent cool guitar. Nisi consectetur qui pariatur
+        required: true
+
+      responses:
+        "201":
+          description: Комментарий создан.
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/comment'
+
+        "400":
+          description: Некорректные данные запроса.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 400
+
+                  message:
+                    type: array
+                    items:
+                      type: string
+                      example: "grade must not be greater than 5,
+                                grade must not be less than 1,
+                                grade must be an integer number"
+
+        "401":
+          description: Пользователь не авторизован или невалидный токен.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 401
+
+                  message:
+                    type: string
+                    example: Unauthorized
+
+        "404":
+          description: Товар не нейден.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 404
+
+                  message:
+                    type: string
+                    example: Product with this id not found
+
+                  error:
+                    type: string
+                    example: Not Found
+
+  /api/order:
+    get:
+      tags:
+        - orders
+      security:
+        - ApiKeyAuth: []
+      summary: Получить список заказов
+      description: Возвращает массив заказов. Каждый заказ описан в виде объекта.
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+        - in: path
+          name: queryOrders
+          schema:
+            type: string
+            example: sortField=totalSum&page=1
+          required: false
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/order'
+
+        "404":
+          description: Заказы не найдены.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 404
+
+                  messages:
+                    type: string
+                    example: Orders not found
+
+                  error:
+                    type: string
+                    example: Not Found
+
+    post:
+      tags:
+        - orders
+      security:
+        - ApiKeyAuth: []
+      summary: Создание заказа
+      description: Создает новый заказ
+
+      parameters:
+        - in: header
+          name: Autorization
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+
+      requestBody:
+        description: Массив объектов, содержащие данные товара.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    example: 1
+                  amount:
+                    type: number
+                    example: 2
+        required: true
+
+      responses:
+        "201":
+          description: Created.
+
+  /api/order/{orderId}:
+    get:
+      tags:
+        - orders
+      security:
+        - ApiKeyAuth: []
+      summary: Получить заказ
+      description: Возвращает объект конкретного заказа
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+        - in: path
+          name: orderId
+          schema:
+            type: string
+            example: 6
+          required: true
+          description: Уникальный идентификатор заказа.
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    example: 6329c3d6a04ab1061c6425ea
+
+                  createdAt:
+                    type: string
+                    example: "2023-02-08T11:52:08.262Z"
+
+                  id:
+                    type: number
+                    example: 8
+
+                  totalSum:
+                    type: number
+                    example: 15000
+
+                  totalSProduct:
+                    type: number
+                    example: 2
+
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/orderedProduct'
+
+
+        "404":
+          description: Заказ не найден
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 404
+
+                  messages:
+                    type: string
+                    example: Order not found
+
+                  error:
+                    type: string
+                    example: Not Found
+
+    delete:
+      tags:
+        - orders
+      security:
+        - ApiKeyAuth: []
+      summary: Удаление заказа
+      description: Редактирует cуществующий заказ
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+        - in: path
+          name: orderId
+          schema:
+            type: string
+            example: 6
+          required: true
+          description: Уникальный идентификатор заказа.
+
+      responses:
+        "204":
+          description: No Content
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        name:
+          type: string
+          example: Keks Doe
+
+        password:
+          type: string
+          example: 123456
+
+    product:
+      type: object
+
+      properties:
+        id:
+          type: number
+          example: 11
+
+        title:
+          type: string
+          example: guitaaaaaaaaaar
+
+        description:
+          type: string
+          example: new amazing exelent cool guitar
+
+        cost:
+          type: number
+          example: 1000
+
+        createdAt:
+          type: string
+          example: "2023-02-08T11:52:08.262Z"
+
+        image:
+          type: string
+          example: guitar.png
+
+        productType:
+          type: string
+          example: электро
+
+        rating:
+          type: number
+          example: 5
+
+        amountOfString:
+          type: number
+          example: 6
+
+        amountOfReview:
+          type: number
+          example: 2
+
+        comments:
+          type: number
+          example: 99
+
+        vendorCode:
+          type: string
+          example: hey3f
+
+    comment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: guitaaaaaaaaaar
+
+        productId:
+          type: number
+          example: 2
+
+        id:
+          type: number
+          example: 8
+
+        createdAt:
+          type: string
+          example: '2023-02-09T06:00:54.029Z'
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        grade:
+          type: number
+          example: 4
+
+        positive:
+          type: string
+          example: new amazing exelent cool guitar. Nisi consectetur qui pariatur
+
+        negative:
+          type: string
+          example: Adipisicing dolore elit consequat culpa. Irure excepteur
+
+    orderedProduct:
+      type: object
+
+      properties:
+        id:
+          type: number
+          example: 8
+
+        createdAt:
+          type: string
+          example: "2023-02-08T11:52:08.262Z"
+
+        amount:
+          type: number
+          example: 2
+
+        sum:
+          type: number
+          example: 15000
+
+        productId:
+          type: number
+          example: 3
+
+        cost:
+          type: number
+          example: 10000
+
+        orderId:
+          type: number
+          example: 3
+
+    order:
+      type: object
+
+      properties:
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        createdAt:
+          type: string
+          example: "2023-02-08T11:52:08.262Z"
+
+        id:
+          type: number
+          example: 8
+
+        totalSum:
+          type: number
+          example: 20000
+
+        totalSProduct:
+          type: number
+          example: 2

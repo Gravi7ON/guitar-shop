@@ -1,7 +1,7 @@
 ### Create new product
 POST http://localhost:3335/api/product HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU4NTgyNDIsImV4cCI6MTY3NTg2NDI0Mn0.mBiRN_88caLoezqfaCU89-_xk3YFMXaT-0ut7TX1L8o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzYxMTY3ODgsImV4cCI6MTY3NjEyMjc4OH0.BGveSkHHotI3NIsUM_IqqXr9CrsBiEzi5x7-sArkiVQ
 
 {
   "title": "guitaaaaaaaaaar",
@@ -10,7 +10,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiM
   "image": "guitar.png",
   "productType": "электро",
   "vendorCode": "hey3f",
-  "amountOfString": 6
+  "amountOfString": 8
 }
 
 ### Update existed product
@@ -29,8 +29,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiM
 }
 
 ### Delete existed product
-DELETE http://localhost:3335/api/product/12 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzU4NTgyNDIsImV4cCI6MTY3NTg2NDI0Mn0.mBiRN_88caLoezqfaCU89-_xk3YFMXaT-0ut7TX1L8o
+DELETE http://localhost:3335/api/product/10 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzYxMTY3ODgsImV4cCI6MTY3NjEyMjc4OH0.BGveSkHHotI3NIsUM_IqqXr9CrsBiEzi5x7-sArkiVQ
 
 ### Find existed product
 GET http://localhost:3335/api/product/1 HTTP/1.1

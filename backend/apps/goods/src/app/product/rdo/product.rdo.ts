@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { Comment, Order } from '@backend/shared-types';
+import { Comment } from '@backend/shared-types';
 
 export class ProductRdo {
   @Expose()
@@ -35,10 +35,6 @@ export class ProductRdo {
   @Expose()
   @Transform(({value}) => value.length)
   public comments: Comment[];
-
-  @Expose()
-  @Transform(({value}) => value.length)
-  public orders: Order[];
 
   @Expose()
   public vendorCode: string;

@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "name": "ddhip Hawk",
-  "email": "tsddsdty@gmail.com",
+  "email": "dsdty@gmail.com",
   "password": "123456"
 }
 
@@ -20,4 +20,4 @@ Content-Type: application/json
 
 ### Check user authorization
 GET http://localhost:3333/api/auth/check-authorization HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UyNDMwNmVkYzlkNTZmNmU3MzkzMmUiLCJlbWFpbCI6InRkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjc1Nzc2NzI4LCJleHAiOjE2NzU3ODI3Mjh9.oEQKb_PlTr8QfNTxdQrjBaD1yZzVISD2pkBdx6Yf2gE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiMThmODFjNWU3MDdiZTcyMzEiLCJlbWFpbCI6InRzZHNkdHlAZ21haWwuY29tIiwibmFtZSI6ImRkaGlwIEhhd2siLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzYxMDgzMzgsImV4cCI6MTY3NjExNDMzOH0.R1W4ZaDKJQbNMSYeLCwLNU_LP-EwHBOlegkUfxXyqAU
