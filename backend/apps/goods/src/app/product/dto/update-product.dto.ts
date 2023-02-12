@@ -7,26 +7,26 @@ export class UpdateProductDto {
   @IsString()
   @MinLength(10)
   @MaxLength(100)
-  title: string;
+  title?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(20)
   @MaxLength(1024)
-  description: string;
+  description?: string;
 
   @IsOptional()
   @IsPositive()
   @Min(100)
   @Max(1_000_000)
-  cost: number;
+  cost?: number;
 
   @IsOptional()
   @IsString()
   @Matches(/[.jpeg|.jpg|.png]$/, {
     message: ProductMessageException.BadFormat
   })
-  image: string;
+  image?: string;
 
   @IsOptional()
   createdAt?: Date;
@@ -34,16 +34,16 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   @IsEnum(ProductType)
-  productType: string;
+  productType?: string;
 
   @IsOptional()
   @IsString()
   @MinLength(5)
   @MaxLength(40)
-  vendorCode: string;
+  vendorCode?: string;
 
   @IsOptional()
   @IsNumber()
   @IsEnum(AmountOfString)
-  amountOfString: number
+  amountOfString?: number
 }

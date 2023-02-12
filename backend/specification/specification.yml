@@ -359,6 +359,73 @@ paths:
                     type: string
                     example: Bad Request
 
+  /api/file/{imageName}:
+    get:
+      tags:
+        - goods
+      summary: Получить изображени товара
+      description: Возвращает изображение товара.
+
+      responses:
+        "200":
+          description: Ok.
+
+    post:
+      tags:
+        - goods
+      security:
+        - ApiKeyAuth: []
+      summary: Загружает или обновляет изображение товара
+      description: Загружает изображение товара
+
+      parameters:
+        - in: header
+          name: Autorization
+          description: Только для администратора
+          schema:
+            type: string
+            example: Bearer T2xpdmVyLmNvbm5lckBnbWFpbC5jb20
+          required: true
+
+      requestBody:
+        description: Изображение товара.
+        content:
+          multipart/formdata:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+            encoding:
+              image:
+                contentType: image/png, image/jpeg
+
+        required: true
+
+      responses:
+        "200":
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Image uploaded successfully!
+
+                  data:
+                    type: object
+                    properties:
+                      originalName:
+                        type: string
+                        example: filename.png
+
+                      fileName:
+                        type: string
+                        example: 925fffd5-5a65-4790-bec8-78cf94dc2688.png
+
   /api/product/{productId}:
     get:
       tags:
@@ -445,10 +512,6 @@ paths:
                 cost:
                   type: number
                   example: 1000
-
-                image:
-                  type: string
-                  example: guitar.png
 
                 productType:
                   type: string

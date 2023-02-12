@@ -18,11 +18,12 @@ export class CreateProductDto {
   @Max(1_000_000)
   cost: number;
 
+  @IsOptional()
   @IsString()
   @Matches(/[.jpeg|.jpg|.png]$/, {
     message: ProductMessageException.BadFormat
   })
-  image: string;
+  image?: string;
 
   @IsOptional()
   createdAt?: Date;

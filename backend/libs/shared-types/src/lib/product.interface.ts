@@ -5,7 +5,7 @@ export interface Product {
   id?: number
   title: string;
   description: string;
-  image: string;
+  image?: string;
   productType: string;
   vendorCode: string;
   rating?: number;

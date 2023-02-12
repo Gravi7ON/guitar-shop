@@ -8,6 +8,8 @@ import { ProductModule } from './product/product.module';
 import { CommentModule } from './comment/comment.module';
 import { OrderModule } from './order/order.module';
 import { OrderProductModule } from './order-product/order-product.module';
+import { FileModule } from './file/file.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -19,9 +21,13 @@ import { OrderProductModule } from './order-product/order-product.module';
       envFilePath: ENV_FILE_PATH,
       load: [jwtConfig, rabbitMqOptions],
     }),
+    MulterModule.register({
+      dest: './uploads',
+    }),
     CommentModule,
     OrderModule,
     OrderProductModule,
+    FileModule,
   ],
   controllers: [],
   providers: [],

@@ -22,6 +22,6 @@ import { CommentModule } from '../comment/comment.module';
   ],
   controllers: [ProductController],
   providers: [ProductRepository, JwtStrategy, ProductService, AdminGuard],
-  exports: [ProductRepository],
+  exports: [ProductRepository, ProductService],
 })
 export class ProductModule {}
