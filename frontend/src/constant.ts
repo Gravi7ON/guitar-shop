@@ -3,7 +3,7 @@ export enum AppRoute {
   SignIn = '/login',
   SignUp = '/register',
   ProductList = '/products',
-  ProductInfo = '/product/:id',
+  ProductInfo = '/product',
   OrderList = '/orders',
   Order = '/order/:id',
   NotFound = '/not-found',
@@ -22,3 +22,18 @@ export enum AuthorizationStatus {
   Unknown = 'Unknown'
 }
 
+export enum NameSpaceStore {
+  Product = 'PRODUCT',
+  User = 'USER',
+}
+
+export enum APIRoute {
+  SignUp = '/register',
+  SignIn = '/login',
+  CheckAuth = '/check-authorization',
+  Products = '/product'
+}
+
+export enum ProductQuery {
+  Default = '?limit=10000&sortField=cost&sortDirection=asc'
+}

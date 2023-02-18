@@ -1,5 +1,4 @@
 import CommonSpace, { PageTitleForCommonSpace } from '../../components/common-space/common-space';
-import { UserStatus } from '../../components/header/header';
 import OrderInfo from '../../components/order-info/order-info';
 import Pagination, { PageTitleForPagination } from '../../components/pagination/pagination';
 import SortBar, { PageTitleForSort } from '../../components/sort-bar/sort-bar';
@@ -9,7 +8,6 @@ export default function OrderList(): JSX.Element {
   return (
     <CommonSpace
       pageTitle={PageTitleForCommonSpace.OrdersList}
-      userStatus={UserStatus.Admin}
     >
       <TitleAndBreadcrumbs pageTitle={PageTitleForBreadcrumbs.OrdersList} />
       <SortBar pageTitle={PageTitleForSort.OrdersList}/>

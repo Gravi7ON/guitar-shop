@@ -1,4 +1,4 @@
-export default function ModalCArdSuccessAdd(): JSX.Element {
+export default function ModalCardSuccessAdd(): JSX.Element {
   return (
     <div className="modal is-active modal--success modal-for-ui-kit">
       <div className="modal__wrapper">

@@ -4,7 +4,6 @@ import Header from '../header/header';
 
 type CommonSpaceProps = PropsWithChildren<{
   pageTitle?: PageTitleForCommonSpace | undefined;
-  userStatus?: string | undefined;
 }>
 
 export enum PageTitleForCommonSpace {
@@ -78,10 +77,10 @@ const getSpaceDependsPage = (children: ReactNode | undefined, pageTitle?: string
   }
 };
 
-export default function CommonSpace({children, pageTitle, userStatus}: CommonSpaceProps): JSX.Element {
+export default function CommonSpace({children, pageTitle}: CommonSpaceProps): JSX.Element {
   return (
     <>
-      <Header userStatus={userStatus}/>
+      <Header />
       {
         getSpaceDependsPage(children, pageTitle)
       }

@@ -37,7 +37,7 @@ export class AuthService {
     this.rabbitClient.emit(
       createEvent(CommandEvent.AddSubscriber),
       {
-        loginLink: 'http://localhost/login',
+        loginLink: 'http://localhost:4200/login',
         email: user.email,
         password: user.password,
         name: user.name

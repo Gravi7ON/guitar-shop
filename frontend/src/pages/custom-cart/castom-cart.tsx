@@ -1,11 +1,10 @@
 import CommonSpace from '../../components/common-space/common-space';
 import CustomCartProduct from '../../components/custom-cart-product/custom-cart-product';
-import { UserStatus } from '../../components/header/header';
 import TitleAndBreadcrumbs, { PageTitleForBreadcrumbs } from '../../components/title-breadcrumbs/title-breadcrumbs';
 
 export default function CustomCart(): JSX.Element {
   return (
-    <CommonSpace userStatus={UserStatus.LoggedAndGoodsInCart}>
+    <CommonSpace>
       <TitleAndBreadcrumbs pageTitle={PageTitleForBreadcrumbs.CustomCart}/>
       <div className="cart">
         <CustomCartProduct />
