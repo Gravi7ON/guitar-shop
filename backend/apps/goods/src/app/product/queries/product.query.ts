@@ -1,6 +1,7 @@
 import { IsIn, IsNumber, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ClientQueryProduct } from '../product.constant';
+import { ProductType } from '@backend/shared-types';
 
 export class ProductQuery {
   @Transform(({ value } ) => +value || ClientQueryProduct.DefaultLimit)
@@ -15,6 +16,13 @@ export class ProductQuery {
   @IsIn(['createdAt', 'cost', 'rating'])
   @IsOptional()
   public sortField: 'createdAt' | 'cost' | 'rating' = ClientQueryProduct.DefaultSortField;
+
+  @Transform(({ value }) => +value)
+  @IsOptional()
+  public amountOfString: number;
+
+  @IsOptional()
+  public productType: ProductType;
 
   @Transform(({ value }) => +value)
   @IsOptional()

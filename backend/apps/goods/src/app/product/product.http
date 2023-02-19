@@ -51,4 +51,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2M2UzOTBiM
 GET http://localhost:3335/api/product/1 HTTP/1.1
 
 ### Find existed products
-GET http://localhost:3335/api/product?limit=9&sortDirection=desc&page=1&sortField=rating HTTP/1.1
+GET http://localhost:3335/api/product?limit=9&sortDirection=desc&page=1&sortField=rating&productType=укулеле&amountOfString=6 HTTP/1.1

@@ -10,6 +10,7 @@ export type UserProcess = {
 
 export type ProductData = {
   products: Product[] | [];
+  initialProducts: Product[] | [];
   isProductsLoaded: boolean;
 }
 

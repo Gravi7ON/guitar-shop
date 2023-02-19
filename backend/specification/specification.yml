@@ -244,7 +244,7 @@ paths:
           name: queryGoods
           schema:
             type: string
-            example: limit=9&sortDirection=desc&page=1&sortField=rating
+            example: limit=9&sortDirection=desc&page=1&sortField=rating&productType=укулеле&amountOfString=6
           required: false
 
       responses:

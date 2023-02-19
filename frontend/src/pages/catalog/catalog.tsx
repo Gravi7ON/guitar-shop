@@ -19,7 +19,7 @@ export default function Catalog(): JSX.Element {
     id: 0
   });
 
-  const products = useAppSelector(getProducts) ?? [];
+  const products = useAppSelector(getProducts);
 
   return (
     <CommonSpace>

@@ -77,8 +77,14 @@ export class ProductRepository implements CRUDRepository<ProductEntity, number, 
     });
   }
 
-  public async findProducts({limit, page, sortDirection, sortField}: ProductQuery): Promise<Product[] | null> {
+  public async findProducts({limit, page, sortDirection, sortField, amountOfString, productType}: ProductQuery): Promise<Product[] | null> {
     return this.prisma.product.findMany({
+      where: productType ? {
+        productType
+      } :
+      amountOfString ? {
+        amountOfString
+      } : undefined,
       take: limit,
       include: {
         comments: true
