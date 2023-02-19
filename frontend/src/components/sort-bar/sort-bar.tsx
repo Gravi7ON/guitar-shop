@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { useAppDispatch } from 'src/hooks';
+import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { fetchProductsAction } from 'src/store/api-actions';
+import { changeAsc, changeCost, changeDate, changeDesc, changeRating } from 'src/store/control-element/control-element';
+import { getControlElement } from 'src/store/control-element/selector';
+import { filterPoducts, generateQueryString } from 'src/utils/helpers';
 
 type SortBarProps = {
   pageTitle: PageTitleForSort;
@@ -16,8 +18,8 @@ enum SortButton {
   Asc = 'asc',
   Desc = 'desc',
   Cost = 'cost',
-  Date = 'date',
-  Rating = 'rating'
+  Rating = 'rating',
+  Date = 'date'
 }
 
 const SortTab = {
@@ -26,122 +28,78 @@ const SortTab = {
   ProductsList: ['по дате', 'по цене', 'по популярности']
 } as const;
 
-const activeTabQueryAsc: {[key: string]: string} = {
-  cost: '?limit=10000&sortField=cost&sortDirection=asc',
-  rating: '?limit=10000&sortField=rating&sortDirection=asc'
-};
-
-const activeTabQueryDesc: {[key: string]: string} = {
-  cost: '?limit=10000&sortField=cost&sortDirection=desc',
-  rating: '?limit=10000&sortField=rating&sortDirection=desc'
-}
-
 export default function SortBar({pageTitle}: SortBarProps): JSX.Element {
-  const [isSortTabActive, setIsSortTabActive] = useState<{
-    [key: string]: boolean
-  }>({
-    cost: true,
-    rating: false,
-    date: false
-  });
-
-  const [isSortDirectionActive, setIsSortDirectionActive] = useState<{
-    [key: string]: boolean
-  }>({
-    asc: true,
-    desc: false
-  });
-
   const dispatch = useAppDispatch();
+  const controlElement = useAppSelector(getControlElement);
 
   const getSortTabClassActive = (tab: string) => {
     if (tab === SortTab.ProductsList[0]) {
-      return isSortTabActive.date ? 'catalog-sort__type-button--active' : '';
+      return controlElement.date ? 'catalog-sort__type-button--active' : '';
     }
 
     if (tab === SortTab.ProductsList[1]) {
-      return isSortTabActive.cost ? 'catalog-sort__type-button--active' : '';
+      return controlElement.cost ? 'catalog-sort__type-button--active' : '';
     }
 
     if (tab === SortTab.ProductsList[2]) {
-      return isSortTabActive.rating ? 'catalog-sort__type-button--active' : '';
+      return controlElement.rating ? 'catalog-sort__type-button--active' : '';
     }
   };
 
   const getSortDirectionClassActive = (buttonTitle: string) => {
     if (buttonTitle === SortButton.Asc) {
-      return isSortDirectionActive.asc ? 'catalog-sort__order-button--active' : '';
+      return controlElement.asc ? 'catalog-sort__order-button--active' : '';
     }
 
     if (buttonTitle === SortButton.Desc) {
-      return isSortDirectionActive.desc ? 'catalog-sort__order-button--active' : '';
+      return controlElement.desc ? 'catalog-sort__order-button--active' : '';
     }
   };
 
-  const setOnlyOneTrue = (
-    cbState: (
-      cb: (prev: {[key: string]: boolean}) => typeof prev
-    ) => void, prevKey: string
-  ) => {
-    cbState((previos) => {
-      const prev = {...previos};
-      for (const button of Object.keys(prev)) {
-        prev[button] = false;
-      }
-      prev[prevKey] = true;
-      return prev;
-    });
+  const completeSortTab = async (typeButton: SortButton) => {
+    switch (typeButton) {
+      case SortButton.Cost:
+        dispatch(changeCost());
+        break;
+      case SortButton.Date:
+        dispatch(changeDate());
+        break;
+      case SortButton.Rating:
+        dispatch(changeRating());
+    }
+
+    await dispatch(fetchProductsAction(generateQueryString()));
+    filterPoducts();
+  }
+
+  const completeSortDirection = async () => {
+    dispatch(changeAsc());
+    dispatch(changeDesc());
+    await dispatch(fetchProductsAction(generateQueryString()));
+    filterPoducts();
   }
 
   const getButtonSortHandler = (buttonTitle: string) => {
     switch (buttonTitle) {
       case SortTab.ProductsList[0]:
         return () => {
-          setOnlyOneTrue(setIsSortTabActive, SortButton.Date);
+          completeSortTab(SortButton.Date);
         };
       case SortTab.ProductsList[1]:
         return () => {
-          setOnlyOneTrue(setIsSortTabActive, SortButton.Cost);
-          for (const [key, value] of Object.entries(isSortDirectionActive)) {
-            if (value) {
-              if (key === SortButton.Asc) {
-                dispatch(fetchProductsAction(activeTabQueryAsc.cost));
-                return;
-              }
-              dispatch(fetchProductsAction(activeTabQueryDesc.cost));
-            }
-          }
+          completeSortTab(SortButton.Cost);
         };
       case SortTab.ProductsList[2]:
         return () => {
-          setOnlyOneTrue(setIsSortTabActive, SortButton.Rating);
-          for (const [key, value] of Object.entries(isSortDirectionActive)) {
-            if (value) {
-              if (key === SortButton.Asc) {
-                dispatch(fetchProductsAction(activeTabQueryAsc.rating));
-                return;
-              }
-              dispatch(fetchProductsAction(activeTabQueryDesc.rating));
-            }
-          }
+          completeSortTab(SortButton.Rating);
         };
       case SortButton.Asc:
         return () => {
-          setOnlyOneTrue(setIsSortDirectionActive, SortButton.Asc);
-          for (const [key, value] of Object.entries(isSortTabActive)) {
-            if (value) {
-              dispatch(fetchProductsAction(activeTabQueryAsc[key]));
-            }
-          }
+          completeSortDirection();
         };
       case SortButton.Desc:
         return () => {
-          setOnlyOneTrue(setIsSortDirectionActive, SortButton.Desc);
-          for (const [key, value] of Object.entries(isSortTabActive)) {
-            if (value) {
-              dispatch(fetchProductsAction(activeTabQueryDesc[key]));
-            }
-          }
+          completeSortDirection();
         };
     }
   };

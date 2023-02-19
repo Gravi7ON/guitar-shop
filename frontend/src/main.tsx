@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import App from './components/app/app';
 import browserHistory from './browser-history';
 import HistoryRouter from './components/history-router/history-router';
-import ScrollToTop from './components/scroll-to-top/scroll-to-top';
 import { checkAuthAction, fetchProductsAction } from './store/api-actions';
 import { store } from './store/store';
 
@@ -33,7 +32,6 @@ root.render(
           draggable
           pauseOnHover={false}
         />
-        <ScrollToTop />
         <App />
       </HistoryRouter>
     </Provider>

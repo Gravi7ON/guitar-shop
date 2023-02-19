@@ -1,10 +1,22 @@
-import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'src/hooks';
 import { fetchProductsAction } from 'src/store/api-actions';
-import { getInitialProducts, getProducts } from 'src/store/product-data/selector';
+import { changeAcoustic, changeElectric, changeFour, changeFrom, changeSeven, changeSix, changeTo, changeTwelve, changeUkulele, setInitial } from 'src/store/control-element/control-element';
+import { getControlElement } from 'src/store/control-element/selector';
+import { getProducts } from 'src/store/product-data/selector';
+import { filterPoducts, generateQueryString } from 'src/utils/helpers';
 
 type FilterGoodsProps = {
   isCatalog?: boolean;
+}
+
+enum ElementOfControl {
+  Acoustic = 'acoustic',
+  Electric = 'electric',
+  Ukulele = 'ukulele',
+  Four = 'four',
+  Six = 'six',
+  Seven = 'seven',
+  Twelve = 'twelve'
 }
 
 const adapter: {[key: string]: string | number} = {
@@ -14,72 +26,80 @@ const adapter: {[key: string]: string | number} = {
   four: 4,
   six: 6,
   seven: 7,
-  twelve: 12
+  twelve: 12,
+  from: 'from',
+  to: 'to'
 }
 
 export default function FilterGoods({isCatalog}: FilterGoodsProps): JSX.Element {
   const products = useAppSelector(getProducts);
-  const initialProducts = useAppSelector(getInitialProducts);
+  const controlElement = useAppSelector(getControlElement);
   const dispatch = useAppDispatch();
 
-  const [rangeCost, setRangeCost] = useState({
-    from: '',
-    to: ''
-  });
-
-  const [productType, setProductType] = useState<{
-    [key: string]: boolean
-  }>({
-    acoustic: false,
-    electric: false,
-    ukulele: false
-  });
-
-  const [amoutString, setAmountString] = useState<{
-    [key: string]: boolean
-  }>({
-    four: false,
-    six: false,
-    seven: false,
-    twelve: false
-  });
-
-  // useEffect(() => {
-  //   if (Object.values(productType).includes(true)) {
-  //     let filteredProducts: Product[] = [];
-  //     for (const [key, value] of Object.entries(productType)) {
-  //       if (value) {
-  //         filteredProducts = filteredProducts.concat([...initialProducts].filter((product) => product.productType === adapter[key]));
-  //       }
-  //     }
-  //     console.log(filteredProducts);
-
-  //     dispatch(sortProduct(filteredProducts));
-  //   }
-
-  //   if (Object.values(productType).every((value) => value === false)) {
-  //     dispatch(sortProduct(initialProducts));
-  //   }
-  // }, [initialProducts, productType])
-
   const ascSortProducts = [...products].sort((a, b) => a.cost - b.cost);
-  const minPrice = ascSortProducts[0].cost ?? 0;
+  const minPrice = ascSortProducts[0]?.cost ?? 0;
   const maxPrice = ascSortProducts.at(-1)?.cost ?? 0;
 
   const inputChangeRangeHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = evt.target;
-    setRangeCost((prev) => ({...prev, [name]: value}));
+    if (name === adapter.from) {
+      dispatch(changeFrom(value));
+      filterPoducts();
+      return;
+    }
+
+    dispatch(changeTo(value));
+    filterPoducts();
   };
 
   const inputChangeProductTypeHandler = async (evt: React.ChangeEvent<HTMLInputElement>) => {
     const {name} = evt.target;
-    setProductType((prev) => ({...prev, [name]: !prev[name]}));
-    dispatch(fetchProductsAction(`?limit=10000&sortField=cost&sortDirection=asc&productType=${encodeURIComponent(adapter[name])}`))
+    switch (name) {
+      case ElementOfControl.Acoustic:
+        dispatch(changeAcoustic());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+        break;
+      case ElementOfControl.Ukulele:
+        dispatch(changeUkulele());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+        break;
+      case ElementOfControl.Electric:
+        dispatch(changeElectric());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+    }
   };
 
-  const inputChangeAmountStringHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const inputChangeAmountStringHandler = async (evt: React.ChangeEvent<HTMLInputElement>) => {
     const {name} = evt.target;
-    setAmountString((prev) => ({...prev, [name]: !prev[name]}));
+    switch (name || Boolean) {
+      case ElementOfControl.Four:
+        if (controlElement.ukulele) {
+          await dispatch(fetchProductsAction(generateQueryString()));
+          filterPoducts();
+          return;
+        }
+        dispatch(changeFour());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+        break;
+      case ElementOfControl.Six:
+        dispatch(changeSix());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+        break;
+      case ElementOfControl.Seven:
+        dispatch(changeSeven());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+        break;
+      case ElementOfControl.Twelve:
+        dispatch(changeTwelve());
+        await dispatch(fetchProductsAction(generateQueryString()));
+        filterPoducts();
+    }
   };
 
   return (
@@ -92,11 +112,11 @@ export default function FilterGoods({isCatalog}: FilterGoodsProps): JSX.Element 
           <div className="catalog-filter__price-range">
             <div className="form-input">
               <label className="visually-hidden">Минимальная цена</label>
-              <input onChange={inputChangeRangeHandler} type="number" placeholder={minPrice.toString()} id="priceMin" name="from" value={rangeCost.from}/>
+              <input onChange={inputChangeRangeHandler} type="number" placeholder={minPrice.toString()} id="priceMin" name="from" value={controlElement.from}/>
             </div>
             <div className="form-input">
               <label className="visually-hidden">Максимальная цена</label>
-              <input onChange={inputChangeRangeHandler} type="number" placeholder={maxPrice.toString()} id="priceMax" name="to" value={rangeCost.to}/>
+              <input onChange={inputChangeRangeHandler} type="number" placeholder={maxPrice.toString()} id="priceMax" name="to" value={controlElement.to}/>
             </div>
           </div>
         </fieldset>
@@ -104,54 +124,43 @@ export default function FilterGoods({isCatalog}: FilterGoodsProps): JSX.Element 
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Тип гитар</legend>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeProductTypeHandler} className="visually-hidden" type="checkbox" id="acoustic" name="acoustic" checked={productType.acoustic} disabled={!initialProducts.some((product) => product.productType === adapter.acoustic)}/>
+          <input onChange={inputChangeProductTypeHandler} className="visually-hidden" type="checkbox" id="acoustic" name="acoustic" checked={controlElement.acoustic} disabled={!products.some((product) => product.productType === adapter.acoustic)}/>
           <label htmlFor="acoustic">Акустические гитары</label>
         </div>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeProductTypeHandler} className="visually-hidden" type="checkbox" id="electric" name="electric" checked={productType.electric} disabled={!initialProducts.some((product) => product.productType === adapter.electric)}/>
+          <input onChange={inputChangeProductTypeHandler} className="visually-hidden" type="checkbox" id="electric" name="electric" checked={controlElement.electric} disabled={!products.some((product) => product.productType === adapter.electric)}/>
           <label htmlFor="electric">Электрогитары</label>
         </div>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeProductTypeHandler} className="visually-hidden" type="checkbox" id="ukulele" name="ukulele" checked={productType.ukulele} disabled={!initialProducts.some((product) => product.productType === adapter.ukulele)}/>
+          <input onChange={inputChangeProductTypeHandler} className="visually-hidden" type="checkbox" id="ukulele" name="ukulele" checked={controlElement.ukulele} disabled={!products.some((product) => product.productType === adapter.ukulele)}/>
           <label htmlFor="ukulele">Укулеле</label>
         </div>
       </fieldset>
       <fieldset className="catalog-filter__block">
         <legend className="catalog-filter__block-title">Количество струн</legend>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="4-strings" name="four" checked={amoutString.four} disabled={!initialProducts.some((product) => product.amountOfString === adapter.four)}/>
+          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="4-strings" name="four" checked={controlElement.four || controlElement.ukulele} disabled={!products.some((product) => product.amountOfString === adapter.four)}/>
           <label htmlFor="4-strings">4</label>
         </div>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="6-strings" name="six" checked={amoutString.six} disabled={!initialProducts.some((product) => product.amountOfString === adapter.six)}/>
+          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="6-strings" name="six" checked={controlElement.six} disabled={!products.some((product) => product.amountOfString === adapter.six)}/>
           <label htmlFor="6-strings">6</label>
         </div>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="7-strings" name="seven" checked={amoutString.seven} disabled={!initialProducts.some((product) => product.amountOfString === adapter.seven)}/>
+          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="7-strings" name="seven" checked={controlElement.seven} disabled={!products.some((product) => product.amountOfString === adapter.seven)}/>
           <label htmlFor="7-strings">7</label>
         </div>
         <div className="form-checkbox catalog-filter__block-item">
-          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="12-strings" name="twelve" checked={amoutString.twelve} disabled={!initialProducts.some((product) => product.amountOfString === adapter.twelve)}/>
+          <input onChange={inputChangeAmountStringHandler} className="visually-hidden" type="checkbox" id="12-strings" name="twelve" checked={controlElement.twelve} disabled={!products.some((product) => product.amountOfString === adapter.twelve)}/>
           <label htmlFor="12-strings">12</label>
         </div>
       </fieldset>
-      <button onClick={() => {
-        setRangeCost(() => ({
-          from: '',
-          to: ''
-        }));
-        setProductType(() => ({
-          acoustic: false,
-          electric: false,
-          ukulele: false
-        }));
-        setAmountString(() => ({
-          four: false,
-          six: false,
-          seven: false,
-          twelve: false
-        }))
-      }} className="catalog-filter__reset-btn button button--black-border button--medium" type="reset">Очистить</button>
+      <button onClick={
+        () => {
+          dispatch(setInitial());
+          dispatch(fetchProductsAction(generateQueryString()));
+        }
+      } className="catalog-filter__reset-btn button button--black-border button--medium" type="reset">Очистить</button>
     </form>
   );
 }

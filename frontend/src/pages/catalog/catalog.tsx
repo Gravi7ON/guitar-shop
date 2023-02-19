@@ -20,18 +20,23 @@ export default function Catalog(): JSX.Element {
   });
 
   const products = useAppSelector(getProducts);
-
   return (
     <CommonSpace>
       <TitleAndBreadcrumbs pageTitle={PageTitleForBreadcrumbs.Catalog}/>
       <CatalogProduct>
         <FilterGoods isCatalog/>
-        <SortBar pageTitle={PageTitleForSort.Catalog}/>
-        <ListProductCard
-          onChangeCatalogModalEnter={setIsModalEnter}
-          onChangeCatalogAddCard={setIsAddCart}
-        />
-        <Pagination />
+        {
+          products.length === 0 ?
+          <div style={{marginLeft: '50px'}}><h2><b>No content</b></h2></div> :
+          <>
+            <SortBar pageTitle={PageTitleForSort.Catalog} />
+            <ListProductCard
+                onChangeCatalogModalEnter={setIsModalEnter}
+                onChangeCatalogAddCard={setIsAddCart}
+            />
+            <Pagination />
+          </>
+        }
       </CatalogProduct>
       {
         isModalEnter &&

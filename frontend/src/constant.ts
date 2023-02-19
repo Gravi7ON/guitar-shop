@@ -25,6 +25,7 @@ export enum AuthorizationStatus {
 export enum NameSpaceStore {
   Product = 'PRODUCT',
   User = 'USER',
+  ControlElement = 'CONTROL_ELEMENT'
 }
 
 export enum APIRoute {
