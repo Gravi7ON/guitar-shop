@@ -16,8 +16,6 @@ export const productData = createSlice({
   reducers: {
     filterProduct(state, action) {
       const {from, to, products} = action.payload;
-      console.log(products, '+++');
-
       if (from && to && (Number(to) > Number(from))) {
         const filteredProducts = products.filter((product: Product) => {
           return (product.cost >= Number(from)) && (product.cost <= Number(to));
@@ -54,7 +52,6 @@ export const productData = createSlice({
         }
         state.products = action.payload.products ?? [];
         state.isProductsLoaded = false;
-        console.log(state.products, '---');
       })
       .addCase(fetchProductsAction.pending, (state) => {
         state.isProductsLoaded = true;

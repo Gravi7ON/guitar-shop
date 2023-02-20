@@ -83,13 +83,6 @@
         "command": "npx prisma generate --schema ./prisma/schema.prisma",
         "cwd": "apps/goods"
       }
-    },
-    "db-fill": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx prisma db seed",
-        "cwd": "apps/goods"
-      }
     }
   },
   "tags": []

@@ -39,8 +39,13 @@ export class FileController {
     };
   }
 
+  @Get('/test/:imagename')
+  getImageTest(@Param('imagename') image, @Res() res) {
+    return res.sendFile(image, {root: `../../../markup/img/content`});
+  }
+
   @Get(':imagename')
   getImage(@Param('imagename') image, @Res() res) {
-    return res.sendFile(image, { root: './uploads' });
+    return res.sendFile(image, {root: './uploads'});
   }
 }

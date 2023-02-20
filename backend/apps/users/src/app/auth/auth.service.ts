@@ -22,11 +22,13 @@ export class AuthService {
     const existUser = await this.userRepository.findByEmail(user.email);
 
     if (existUser) {
-      throw new ConflictException(AuthUserMessageException.Exists)
+      throw new ConflictException(AuthUserMessageException.Exists);
     }
 
     if (user.isAdmin) {
-      throw new ForbiddenException(AuthUserMessageException.ForbiddenAdmin)
+      if (await this.userRepository.findAdmin()) {
+        throw new ForbiddenException(AuthUserMessageException.ForbiddenAdmin);
+      }
     }
 
     const userEntity = await new UserEntity(user)
