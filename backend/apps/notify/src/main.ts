@@ -4,6 +4,8 @@
  */
 
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import winston from 'winston';
 import { NestFactory } from '@nestjs/core';
 import { DEFAULT_PORT } from '@backend/core';
 
@@ -12,7 +14,34 @@ import { ConfigService } from '@nestjs/config';
 import { getRabbitMqConfig, getRabbitMqOrderQueueConfig } from './config/rabbitmq.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.ms(),
+            nestWinstonModuleUtilities.format.nestLike('USERS_SERVICE', {
+              colors: true,
+              prettyPrint: true,
+            }),
+          ),
+        }),
+        new winston.transports.File({
+          filename: 'error.log',
+          level: 'error',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.ms(),
+            nestWinstonModuleUtilities.format.nestLike('USERS_SERVICE', {
+              colors: true,
+              prettyPrint: true,
+            }),
+          )
+        })
+      ]
+    }),
+  });
 
   const configService = app.get<ConfigService>(ConfigService);
   app.connectMicroservice(getRabbitMqConfig(configService));
