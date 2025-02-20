@@ -1,4 +1,4 @@
-# :guitar: Проект грейдирования «Guitar shop»
+# :guitar: Guitar shop
 
 Инструкции по работе с проектами находятся в файле README.md директорий ./backend и ./frontend соответсвенно.
 
